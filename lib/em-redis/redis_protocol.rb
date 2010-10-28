@@ -248,6 +248,10 @@ module EventMachine
       end
       alias_method :on_error, :errback
 
+      def reconnback(&blk)
+        @reconnect_callback = blk
+      end
+
       def method_missing(*argv, &blk)
         call_command(argv, &blk)
       end
@@ -333,6 +337,7 @@ module EventMachine
           err.code = code
           raise err, "Redis server returned error code: #{code}"
         end
+        @reconnect_callback = nil
       end
 
       def auth_and_select_db
@@ -347,11 +352,20 @@ module EventMachine
         @redis_callbacks = []
         @previous_multibulks = []
         @multibulk_n     = false
-        @reconnecting    = false
         @connected       = true
 
         # These should be sent immediately after connecting.
         auth_and_select_db
+
+        #
+        # Invoke the reconnect callback to allow the consumer to
+        # requeue any commands that were terminated by the disconnect.
+        #
+        if @reconnecting && @reconnect_callback
+          @reconnect_callback.call
+        end
+
+        @reconnecting    = false
 
         succeed
       end
