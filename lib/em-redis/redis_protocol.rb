@@ -333,9 +333,6 @@ module EventMachine
           err.code = code
           raise err, "Redis server returned error code: #{code}"
         end
-
-        # These commands should be first
-        auth_and_select_db
       end
 
       def auth_and_select_db
@@ -352,6 +349,9 @@ module EventMachine
         @multibulk_n     = false
         @reconnecting    = false
         @connected       = true
+
+        # These should be sent immediately after connecting.
+        auth_and_select_db
 
         succeed
       end
@@ -449,7 +449,6 @@ module EventMachine
           EM.add_timer(1) do
             @logger.debug { "Reconnecting to #{@host}:#{@port}" }  if @logger
             reconnect @host, @port
-            auth_and_select_db
           end
           @connected = false
           @reconnecting = true
