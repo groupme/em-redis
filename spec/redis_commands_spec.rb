@@ -439,7 +439,7 @@ EM.describe EM::Protocols::Redis do
     @r.delete('set')
     @r.delete('zset') { done }
   end
-  # 
+  #
   it "should be able add members to a zset" do
     @r.set_add "set", 'key1'
     @r.set_add "set", 'key2'
@@ -449,7 +449,7 @@ EM.describe EM::Protocols::Redis do
     @r.delete('set')
     @r.delete('zset') { done }
   end
-  # 
+  #
   it "should be able delete members to a zset" do
     @r.set_add "set", 'key1'
     @r.set_add "set", 'key2'
@@ -467,7 +467,7 @@ EM.describe EM::Protocols::Redis do
     @r.delete('set2')
     @r.delete('zset') { done }
   end
-  # 
+  #
   it "should be able to get a range of values from a zset" do
     @r.set_add "set", 'key1'
     @r.set_add "set", 'key2'
@@ -487,7 +487,7 @@ EM.describe EM::Protocols::Redis do
     @r.delete('set3')
     @r.delete('zset') { done }
   end
-  # 
+  #
   it "should be able to get a reverse range of values from a zset" do
     @r.set_add "set", 'key1'
     @r.set_add "set", 'key2'
@@ -507,7 +507,7 @@ EM.describe EM::Protocols::Redis do
     @r.delete('set3')
     @r.delete('zset') { done }
   end
-  # 
+  #
   it "should be able to get a range by score of values from a zset" do
     @r.set_add "set", 'key1'
     @r.set_add "set", 'key2'
@@ -579,8 +579,10 @@ EM.describe EM::Protocols::Redis do
   end
   #
   it "should be able to SELECT database" do
-    @r.select(15)
-    @r.get('foo') { |r| r.should == nil; done }
+    @r.ping do
+      @r.select(15)
+      @r.get('foo') { |r| r.should == nil; done }
+    end
   end
   #
   it "should be able to provide the last save time (LASTSAVE)" do
@@ -641,7 +643,7 @@ EM.describe EM::Protocols::Redis do
   #   # lambda { @r.monitor }.should.raise
   #   done
   # end
-  # 
+  #
   # it "should raise error when invoke SYNC" do
   #   # lambda { @r.sync }.should.raise
   #   done

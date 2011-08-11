@@ -6,6 +6,8 @@ module EventMachine
     module Redis
       include EM::Deferrable
 
+      attr_reader :connected
+
       ##
       # constants
       #########################
@@ -51,7 +53,7 @@ module EventMachine
             info[k.to_sym] = v
           }
           info
-        }, 
+        },
         "hgetall"   => lambda{|r|
           Hash[*r]
         }
@@ -416,7 +418,7 @@ module EventMachine
         #e.g. :8
         when COLON
           dispatch_response(Integer(reply_args))
-        #e.g. *2\r\n$1\r\na\r\n$1\r\nb\r\n 
+        #e.g. *2\r\n$1\r\na\r\n$1\r\nb\r\n
         when ASTERISK
           multibulk_count = Integer(reply_args)
           if multibulk_count == -1 || multibulk_count == 0

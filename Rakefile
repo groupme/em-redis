@@ -1,11 +1,11 @@
-require 'rake/gempackagetask'
+require 'rubygems/package_task'
 require 'rubygems/specification'
 require File.expand_path('../lib/em-redis', __FILE__)
 
 task :default => ['redis:test']
 
 spec = eval(File.read('em-redis.gemspec'))
-Rake::GemPackageTask.new(spec) do |pkg|
+Gem::PackageTask.new(spec) do |pkg|
   pkg.gem_spec = spec
 end
 
